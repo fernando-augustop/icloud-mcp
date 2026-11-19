@@ -30,7 +30,7 @@ async function listEvents(count = 25, daysAhead = 30) {
 
   let status;
   try {
-    const result = JSON.parse(await runJXA(eventKitScript(now, future, !eventKitRequested)));
+    const result = JSON.parse(await runJXA(eventKitScript(now, future, !eventKitRequested && config.EVENTKIT_REQUEST)));
     status = result.status;
     if (result.requested) eventKitRequested = true;
     if (status === EK_FULL_ACCESS && Array.isArray(result.events)) {

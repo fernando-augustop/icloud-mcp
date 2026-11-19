@@ -352,6 +352,21 @@ const KEYS = 'allDay,calendar,endDate,id,location,recurrence,startDate,summary';
     return require(path.join(__dirname, '..', 'calendar', 'local-client'));
   };
 
+  await check('ICLOUD_MCP_EVENTKIT_REQUEST=false: undecided status falls back without asking', async () => {
+    const c = freshClient();
+    require(path.join(__dirname, '..', 'config')).EVENTKIT_REQUEST = false;
+    setEventKit(0, { afterRequest: 3 });
+    logs = []; scripts = [];
+    console.error = (...a) => logs.push(a.join(' '));
+    let r;
+    try { r = await c.listEvents(25, 30); } finally {
+      console.error = realError;
+      require(path.join(__dirname, '..', 'config')).EVENTKIT_REQUEST = true;
+    }
+    assert(ek.requested === null, 'asked for access although disabled');
+    assert(r[0].id === 'as-1' && logs.some(l => /status 0/.test(l)));
+  });
+
   await check('write-only (4) on macOS < 14 API: legacy request, denial ends polling early', async () => {
     const c = freshClient();
     setEventKit(4, { afterRequest: 2, legacy: true });

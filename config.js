@@ -12,6 +12,11 @@ module.exports = {
   USE_TEST_MODE: process.env.USE_TEST_MODE === 'true',
   USE_LOCAL_MODE: process.env.USE_LOCAL_MODE !== 'false', // Default to true (local mode)
 
+  // false: list-events never asks for Calendars (EventKit) access. It uses
+  // EventKit only when already granted and otherwise falls back to Calendar.app,
+  // so a headless host never gets a permission dialog nobody can answer.
+  EVENTKIT_REQUEST: process.env.ICLOUD_MCP_EVENTKIT_REQUEST !== 'false',
+
   // Check if running on macOS (required for local mode)
   IS_MACOS: process.platform === 'darwin',
 
